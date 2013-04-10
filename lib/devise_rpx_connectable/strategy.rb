@@ -35,7 +35,12 @@ module Devise #:nodoc:
             
             fail!(:rpx_invalid) and return unless klass.rpx_auto_create_account?
             
-            user = klass.new
+            if user_signed_in?
+              user = current_user
+            else
+              user = klass.new
+            end
+            
             user.store_rpx_credentials!(rpx_user.merge(:request_keys => request_keys))
             user.on_before_rpx_auto_create(rpx_user)
             
